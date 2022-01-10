@@ -1,0 +1,164 @@
+= Arch on WSL
+:toc:
+:toc-placement: preamble
+
+https://github.com/reavon[I've] recently switched from using macOS to using Windows 11 with https://docs.microsoft.com/en-us/windows/wsl/[WSL] installed and _I'm loving it_. These are my notes, compiled from https://github.com/badgumby/arch-wsl[various] sources around the web, to get Arch Linux up and running on WSL2.
+
+== Install WSL and Ubuntu
+
+. Head over to Microsoft and follow the instructions for setting up https://docs.microsoft.com/en-us/windows/wsl/install[Windows Subsystem for Linux]. We are mainly concerned with WSL version 2 or WSL2 as it is commonly called.
+. I need to have a Linux computer already running, so I just installed Ubuntu from the Windows Store.
+
+== Install Arch Linux for WSL2
+
+[NOTE]
+====
+* Keep in mind that my Windows 11 username is `tracp`, you will need to change the paths below to yours.
+
+* The Unix side of things can be completed on any machine, but since I am using Ubuntu from my note above, the following instructions reflect that.
+====
+
+=== Prepare the Image
+
+. Download Arch bootstrap files
+
+  wget https://mirrors.edge.kernel.org/archlinux/iso/latest/archlinux-bootstrap-2021.12.01-x86_64.tar.gz
+
+. Extract the files
+
+  sudo tar xvzf archlinux-bootstrap-2021.12.01-x86_64.tar.gz
+
+. Now compress the files in the `root.x86_64` directory
+
+  sudo tar czvf arch_bootstrap.tar.gz -C root.x86_64 .
+
+. Move `arch_bootstrap.tar.gz` to the machine Arch will be installed on (copy to usb drive, or move out of existing WSL)
+
+  mv arch_bootstrap.tar.gz /mnt/c/Users/tracp/
+
+=== Import the Image
+
+. Create a directory for your ArchLinux distro, such as `\Users\%username%\WSL\ArchLinux`
+
+  mkdir -p  /mnt/c/Users/tracp/WSL/ArchLinux
+
+. Open a PowerShell prompt as Admin, and import the gzip archive into WSL
+
+  wsl --import Arch  C:\Users\tracp\WSL\ArchLinux C:\Users\tracp\arch_bootstrap.tar.gz
+
+=== Configure Arch
+
+Arch can now be launched, but some additional configuration is needed to make the install fully functional.
+
+. Launch Arch from Windows Powershell:
+
+  wsl -d Arch
+
+. Initialize the keyring required to run pacman:
+
+  pacman-key --init
+
+. Fill the new keyring with Arch's latest set of keys:
+
+  pacman-key --populate archlinux
+
+. Pacman's mirrorlist is already installed but entirelly commented out. Fetch a new one and overrite the existing one (we will update this later using `reflector`):
+
+  curl "https://archlinux.org/mirrorlist/?country=US&protocol=https&ip_version=4&use_mirror_status=on" | cut -c 2- > /etc/pacman.d/mirrorlist
+
+. Setup locale
+
+  sed -i 's:#en_US.UTF-8 UTF-8:en_US.UTF-8 UTF-8:g' /etc/locale.gen
+  locale-gen
+  echo LANG=en_US.UTF-8 >> /etc/locale.conf
+  echo LANGUAGE=en_US.UTF-8 >> /etc/locale.conf
+  echo LC_ALL=en_US.UTF-8 >> /etc/locale.conf
+
+=== Install Applications
+
+. Update mirror list (replace United States with preferred repo mirror country). This will take a bit of time. You can do it later if you want.
+
+  reflector --country "United States" --age 12 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
+
+. There will also be a handful of missing packages that are useful to have and can be installed with:
+
+  pacman -Syyu base base-devel git vim wget reflector fish
+
+=== Manage Users
+
+. Change roots password
+
+  passwd
+
+. Add your new user
+
+  useradd -m -G wheel -s /usr/sbin/zsh -d /home/reavon reavon
+
+. Set password for new user
+
+  passwd reavon
+
+. Enable `wheel` group in sudoers
+
+  sed -i '/%wheel ALL=(ALL) ALL/c\%wheel ALL=(ALL) ALL' /etc/sudoers
+
+== Install Paru
+
+Clone and install https://github.com/Morganamilo/paru[Paru]
+
+  git clone https://aur.archlinux.org/paru.git
+  cd paru
+  makepkg -si
+
+To enable colour in paru, you have to enable it first in pacman.
+
+  sudo sed -i 's/^#Color/Color/' /etc/pacman.conf
+
+The most relevant package according to your search term is normally displayed on the top of the search result. In paru, you can flip the search order to make your search easier.
+
+  sudo sed -i 's/^#BottomUp/BottomUp/' /etc/paru.conf
+
+....
+neofetch community/stow openssh keychain terraform tfswitch extra/whois grc pkgfile the_silver_searcher
+....
+
+....
+sudo pkgfile --update
+....
+
+== Setup ZSH
+
+....
+git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+....
+
+== Windows Terminal
+
+....
+ cp icons/*.ico /mnt/c/Users/tracp/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/RoamingState/
+....
+
+....
+            {
+                "acrylicOpacity": 1.0,
+                "bellStyle": "none",
+                "closeOnExit": "graceful",
+                "colorScheme": "Atom One Dark",
+                "commandline": "wsl.exe -d Arch --user reavon",
+                "font":
+                {
+                    "face": "SauceCodePro NF"
+                },
+                "guid": "{a5a97cb8-8961-5535-816d-772efe0c6a3f}",
+                "icon" : "ms-appdata:///roaming/arch_round.ico",
+                "hidden": false,
+                "name": "Arch",
+                "scrollbarState": "hidden",
+                "source": "Windows.Terminal.Wsl",
+                "startingDirectory": "\\\\wsl$\\Arch\\home\\reavon/",
+                "tabColor": "#282C34",
+                "useAcrylic": true
+            },
+....

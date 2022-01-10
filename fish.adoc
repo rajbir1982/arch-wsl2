@@ -1,0 +1,14 @@
+= FIsh Cheat Sheet
+
+== Setup fish
+
+....
+curl -sL https://git.io/fisher | source && fisher install jorgebucaran/fisher
+....
+
+== Aliases
+
+....
+alias ls "ls --color=always"
+funcsave ls
+....

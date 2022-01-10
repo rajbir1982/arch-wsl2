@@ -1,0 +1,41 @@
+= How to share data between different WSL instances
+
+== Shared Directory
+
+Create shared directory which is not included in any WSL instances
+
+....
+mkdir /mnt/wsl/share
+....
+
+This will create `/mnt/wsl/share`` directory shared across all WLS instances but not included in any WSL instances.
+
+You can share data via this shared directory.
+
+However, it is still impossible to directly copy/paste data between WSL instances.
+
+(Note that the shared directory is automatically removed when rebooting.)
+
+== Create shared directory included in a WSL instance
+
+You can make existing directory in WSL instance shared across other WSL instances by using bind mount.
+
+For example, you have two WSL instances, Ubuntu-A and Ubuntu-B.
+
+. Open `~/.profile` in Ubuntu-A and add below code.
+
+  # bind mount shared directory
+  if [ ! -d /mnt/wsl/share-a ]; then
+    mkdir /mnt/wsl/share-a
+    wsl.exe -d Ubuntu-A -u root mount --bind / /mnt/wsl/share-a/
+  fi
+
+. Open `~/.profile` in Ubuntu-B and add below code.
+
+  # bind mount shared directory
+  if [ ! -d /mnt/wsl/share-b ]; then
+    mkdir /mnt/wsl/share-b
+    wsl.exe -d Ubuntu-B -u root mount --bind / /mnt/wsl/share-b/
+  fi
+
+Modifed from https://stackoverflow.com/a/65838203[stackoverflow] answer
