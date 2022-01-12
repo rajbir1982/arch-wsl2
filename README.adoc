@@ -124,7 +124,7 @@ If `curl` was installed, we could generate a new list for just US mirrors and ov
 
 . Add your new user
 
-  useradd -m -G wheel -s /usr/sbin/zsh -d /home/reavon reavon
+  useradd -m -G wheel -s /usr/bin/fish -d /home/reavon reavon
 
 . Set password for new user
 
@@ -159,6 +159,8 @@ sudo pkgfile --update
 ....
 
 == Setup ZSH
+
+I will leave this here for my notes, but I have switched to Fish Shell since I wrote this.
 
 ....
 git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
