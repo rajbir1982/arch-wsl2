@@ -87,10 +87,17 @@ EOF
 
   pacman-key --populate archlinux
 
-. Pacman's mirrorlist is already installed but entirelly commented out. Fetch a new one and overrite the existing one (we will update this later using `reflector`):
+. Pacman's mirrorlist is already installed but entirelly commented out. Let's fix that.
+
+  sed -i -e 's/^#Server/Server/g' /etc/pacman.d/mirrorlist
++
+[NOTE]
+====
+If `curl` was installed, we could generate a new list for just US mirrors and overrite the existing one... but we will do this later using `reflector`):
 
   curl "https://archlinux.org/mirrorlist/?country=US&protocol=https&ip_version=4&use_mirror_status=on" | cut -c 2- > /etc/pacman.d/mirrorlist
-
+====
++
 . Setup locale
 
   sed -i 's:#en_US.UTF-8 UTF-8:en_US.UTF-8 UTF-8:g' /etc/locale.gen
