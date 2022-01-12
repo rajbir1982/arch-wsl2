@@ -160,7 +160,7 @@ sudo pkgfile --update
 
 == Setup ZSH
 
-I will leave this here for my notes, but I have switched to Fish Shell since I wrote this.
+I will leave this here for my notes, but I have switched to https://github.com/reavon/dotfiles/tree/main/config/.config/fish[Fish Shell] since I wrote this.
 
 ....
 git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
