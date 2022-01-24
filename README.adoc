@@ -72,7 +72,7 @@ EOF
 cat > /etc/wsl.conf <<EOF
 [network]
 generateResolvConf = false
-hostname = laptop +
+hostname = laptop
 
 [user]
 default = reavon
@@ -110,7 +110,7 @@ If `curl` was installed, we could generate a new list for just US mirrors and ov
 
 . There will also be a handful of missing packages that are useful to have and can be installed with:
 
-  pacman -Syyu base base-devel git vim wget reflector fish
+  pacman -Syyu base base-devel git vim wget reflector fish openssh starship
 
 . Update mirror list (replace United States with preferred repo mirror country). This will take a bit of time. You can do it later if you want.
 
@@ -136,6 +136,10 @@ If `curl` was installed, we could generate a new list for just US mirrors and ov
 
 == Install Paru
 
+Switch to a user other than root
+
+  su - reavon
+
 Clone and install https://github.com/Morganamilo/paru[Paru]
 
   git clone https://aur.archlinux.org/paru.git
@@ -144,6 +148,7 @@ Clone and install https://github.com/Morganamilo/paru[Paru]
 
 To enable colour in paru, you have to enable it first in pacman.
 
+  ^d
   sudo sed -i 's/^#Color/Color/' /etc/pacman.conf
 
 The most relevant package according to your search term is normally displayed on the top of the search result. In paru, you can flip the search order to make your search easier.
@@ -151,7 +156,7 @@ The most relevant package according to your search term is normally displayed on
   sudo sed -i 's/^#BottomUp/BottomUp/' /etc/paru.conf
 
 ....
-neofetch community/stow openssh keychain terraform tfswitch extra/whois grc pkgfile the_silver_searcher
+paru sneofetch community/stow openssh keychain terraform tfswitch extra/whois grc pkgfile the_silver_searcher
 ....
 
 ....
