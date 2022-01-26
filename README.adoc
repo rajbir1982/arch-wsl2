@@ -173,6 +173,14 @@ git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:
 git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 ....
 
+== Python
+
+=== Poetry
+
+....
+curl -sSL https://install.python-poetry.org | python3
+....
+
 == Windows Terminal
 
 ....
