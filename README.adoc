@@ -87,7 +87,7 @@ EOF
 
   pacman-key --populate archlinux
 
-. Pacman's mirrorlist is already installed but entirelly commented out. Let's fix that.
+. Pacman's mirrorlist is already installed but entirely commented out. Let's fix that.
 
   sed -i -e 's/^#Server/Server/g' /etc/pacman.d/mirrorlist
 +
@@ -110,7 +110,7 @@ If `curl` was installed, we could generate a new list for just US mirrors and ov
 
 . There will also be a handful of missing packages that are useful to have and can be installed with:
 
-  pacman -Syyu base base-devel git vim wget reflector fish openssh starship
+  pacman -Syyu base base-devel git vim wget reflector fish openssh starship swig rsync
 
 . Update mirror list (replace United States with preferred repo mirror country). This will take a bit of time. You can do it later if you want.
 
