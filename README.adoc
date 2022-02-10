@@ -58,13 +58,12 @@ Arch can now be launched, but some additional configuration is needed to make th
 +
 ----
 cat << 'EOF' > /etc/resolv.conf
-nameserver 10.224.0.18
-nameserver 10.230.0.5
-nameserver 192.168.0.1
+
+# Level3
+nameserver 4.4.4.4
+# Google
 nameserver 8.8.8.8
-nameserver 8.8.4.4
 nameserver fec0:0:0:ffff::1
-search lan
 EOF
 ----
 +
@@ -76,6 +75,10 @@ hostname = laptop
 
 [user]
 default = reavon
+
+[boot]
+# Because apparently "generateResolvConf" is broken
+command = "printf 'options use-vc\n\nnameserver 4.4.4.4\nnameserver 8.8.8.8' > /etc/resolv.conf"
 EOF
 ----
 
@@ -110,7 +113,7 @@ If `curl` was installed, we could generate a new list for just US mirrors and ov
 
 . There will also be a handful of missing packages that are useful to have and can be installed with:
 
-  pacman -Syyu base base-devel git vim wget reflector fish openssh starship swig rsync
+  pacman -Syyu base base-devel git vim wget reflector fish openssh starship swig rsync python-pip
 
 . Update mirror list (replace United States with preferred repo mirror country). This will take a bit of time. You can do it later if you want.
 
