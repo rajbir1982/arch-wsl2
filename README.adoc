@@ -137,6 +137,12 @@ If `curl` was installed, we could generate a new list for just US mirrors and ov
 
   sed -i '/%wheel ALL=(ALL) ALL/c\%wheel ALL=(ALL) ALL' /etc/sudoers
 
+=== Fix ping
+
+....
+sudo setcap cap_net_raw+p /usr/sbin/ping
+....
+
 == Install Paru
 
 Switch to a user other than root
